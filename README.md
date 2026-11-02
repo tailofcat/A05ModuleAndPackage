@@ -143,8 +143,15 @@ uv run you-get -o music "<音频页面地址>"
 **`activate` 找不到命令 / 提示 Permission denied**
 你在 WSL 的 bash 里。换 Windows CMD 或 PowerShell。
 
-**`git push` 被拒，提示 `password authentication is not supported`**
-GitHub 已不支持账号密码。改用 Personal Access Token 当密码，见仓库推送说明。
+**`git push` 被拒 / 要求输入密码**
+先看远端地址用什么协议（`git remote -v`）：
+
+| 地址形式 | 认证方式 | 常见报错 |
+|---|---|---|
+| `git@github.com:...` | SSH 公钥 | `Permission denied (publickey)` → 公钥没加到平台 |
+| `https://github.com/...` | Personal Access Token | `password authentication was removed` → 密码位要填 Token |
+
+本项目作者用的是 SSH。克隆后想改协议：`git remote set-url origin <新地址>`。
 
 **`uv sync` 报错，或 `uv.lock` 与 `pyproject.toml` 不一致**
 先确认 uv 版本足够新（`uv --version`），再执行 `uv lock` 重新解析，最后 `uv sync`。
