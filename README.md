@@ -25,14 +25,20 @@
 
 ### 第 1 步：把项目拿到本地
 
+> 访问网址：https://gitcode.com/lijingcong/A05ModuleAndPackage
+> 点击页面中的“下载zip”
+
+或者通过git命令
 ```cmd
 git clone git@github.com:tailofcat/A05ModuleAndPackage.git
 ```
 
 > 没装 git、或者不想用命令行的，可以在 GitHub 页面点绿色的 **Code → Download ZIP**，解压后用同样效果。
 
-### 第 2 步：进入项目目录
 
+
+### 第 2 步：进入项目目录
+手动打开目录，或者使用命令行
 ```cmd
 cd A05ModuleAndPackage
 ```
@@ -40,7 +46,7 @@ cd A05ModuleAndPackage
 进去之后应该能看到 `main.py` 和 `music` 文件夹。
 
 ### 第 3 步：装依赖并运行
-
+以Windows为例，在目录中空白处右键打开"终端或powershell"，输入以下命令（如果前期没有装uv，请查看教程中的uv安装 https://www.runoob.com/python-qt/python-qt-venv-uv.html）
 ```cmd
 uv sync
 uv run python main.py
