@@ -44,3 +44,6 @@ $RECYCLE.BIN/
 *.tmp
 *.bak
 *.orig
+
+# 本地笔记（仅本人参考，不随仓库发布）
+GIT操作指引.md
