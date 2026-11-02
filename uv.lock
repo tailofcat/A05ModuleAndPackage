@@ -8,14 +8,18 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "playsound3" },
+]
+
+[package.dev-dependencies]
+tools = [
     { name = "you-get" },
 ]
 
 [package.metadata]
-requires-dist = [
-    { name = "playsound3", specifier = ">=3.3.2" },
-    { name = "you-get", specifier = ">=0.4.1743" },
-]
+requires-dist = [{ name = "playsound3", specifier = ">=3.3.2" }]
+
+[package.metadata.requires-dev]
+tools = [{ name = "you-get", specifier = ">=0.4.1743" }]
 
 [[package]]
 name = "dukpy"

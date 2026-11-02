@@ -7,5 +7,11 @@ license = "MIT"
 requires-python = ">=3.13"
 dependencies = [
     "playsound3>=3.3.2",
+]
+
+# 可选依赖组：仅用于准备音频素材，不参与演示运行。
+# 安装：uv sync --group tools
+[dependency-groups]
+tools = [
     "you-get>=0.4.1743",
 ]

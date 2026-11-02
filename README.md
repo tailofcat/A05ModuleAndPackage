@@ -58,7 +58,7 @@ A05ModuleAndPackage/
 ├── main.py                 # 演示入口：导入 playsound3 并播放/停止
 ├── pyproject.toml          # 项目元信息与依赖声明
 ├── uv.lock                 # 依赖锁定文件（应提交，保证他人环境一致）
-├── requirements.txt        # pip 格式依赖清单，由 uv.lock 导出
+├── requirements.txt        # pip 格式依赖清单，仅主依赖（不含可选组）
 ├── music/                  # 音频素材
 │   ├── 一班名字之歌-四十九颗星.mp3
 │   └── 二三班名字之歌-九十七颗星.mp3
@@ -79,6 +79,12 @@ uv sync
 ```
 
 `uv sync` 按 `uv.lock` 装出与作者完全一致的环境，包含 Windows 专用依赖的条件处理。
+默认**只装运行演示所需的主依赖**；`you-get` 放在可选的 `tools` 组里，不会自动安装。
+需要下载音频素材时再单独加装：
+
+```cmd
+uv sync --group tools
+```
 
 **方式 B：pip（没装 uv 时）**
 
@@ -96,18 +102,24 @@ pip install -r requirements.txt
 
 ### 依赖清单
 
-| 包 | 用途 | 在哪用 |
+| 包 | 用途 | 是否必需 |
 |---|---|---|
-| [`playsound3`](https://pypi.org/project/playsound3/) | 跨平台播放音频文件，支持 `block=False` 异步播放和 `.stop()` | `main.py` 直接调用 |
-| [`you-get`](https://pypi.org/project/you-get/) | 从网页下载音视频素材，用来准备 `music/` 里的音频 | 命令行工具，非代码依赖 |
+| [`playsound3`](https://pypi.org/project/playsound3/) | 跨平台播放音频文件，支持 `block=False` 异步播放和 `.stop()` | ✅ 主依赖，`main.py` 直接调用 |
+| `pywin32` | Windows 下音频播放的底层支持（MCI），由 `playsound3` 自动拉入 | ✅ 主依赖，仅 `sys_platform == 'win32'` 时安装 |
+| [`you-get`](https://pypi.org/project/you-get/) | 从网页下载音视频素材，用来准备 `music/` 里的音频 | ⚙️ 可选组 `tools`，命令行工具，代码不引用 |
+| `dukpy` | `you-get` 的传递依赖（内嵌 JS 引擎） | ⚙️ 随 `tools` 组一起安装 |
 
-`you-get` 属于**可选**依赖，只用于准备素材，不影响演示运行。下载素材的示例：
+`you-get` 属于**可选**依赖，只用于准备素材，不影响演示运行。它的版本同样被 `uv.lock` 锁定，只是默认不安装。
 
 ```cmd
-uv run you-get -o music <音频页面地址>
+:: 装上下载工具
+uv sync --group tools
+
+:: 下载素材到 music/
+uv run you-get -o music "<音频页面地址>"
 ```
 
-不需要时可以从 `pyproject.toml` 的 `dependencies` 里删掉，再 `uv lock` 一次。
+不再需要时，从 `pyproject.toml` 的 `[dependency-groups]` 里删掉整个 `tools` 组，再 `uv lock` 一次即可。
 
 ## 音频文件对照
 
