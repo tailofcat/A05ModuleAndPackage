@@ -19,6 +19,14 @@ ENV/
 # uv
 # 注意：uv.lock 需要提交，不要忽略它
 
+# 环境变量与密钥（绝不能提交）
+.env
+.env.*
+!.env.example
+
+# 本地导出文件（如讲义 PDF，不随仓库发布）
+*.pdf
+
 # 编辑器 / IDE
 .idea/
 .vscode/
