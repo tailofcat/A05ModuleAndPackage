@@ -22,12 +22,18 @@
 ### 方式一：直接跑主程序（推荐）
 
 ```cmd
-cd C:\Users\CONG\MyCode\A05ModuleAndPackage
+git clone git@github.com:tailofcat/A05ModuleAndPackage.git
+cd A05ModuleAndPackage
 uv sync
 uv run python main.py
 ```
 
 运行后音乐开始播放，终端会循环提示，输入 `S` 或 `Stop` 回车即停止。
+
+> 已有本地副本的话，前两行 `git clone` / `cd` 可以跳过，直接进到项目目录执行后两行。
+>
+> 📁 下文所有命令都假定**当前工作目录是项目根目录**（能看到 `main.py` 和 `music/` 的那一层）。
+> `main.py` 里的音频路径写的是 `./music/...`，在别的目录执行会找不到文件。
 
 ### 方式二：在交互式解释器里手动 import
 
@@ -79,7 +85,7 @@ uv sync
 ```
 
 `uv sync` 按 `uv.lock` 装出与作者完全一致的环境，包含 Windows 专用依赖的条件处理。
-默认**只装运行演示所需的主依赖**；`you-get` 放在可选的 `tools` 组里，不会自动安装。
+默认**只装运行演示所需的主依赖**；`yt-dlp` 放在可选的 `tools` 组里，不会自动安装。
 需要下载音频素材时再单独加装：
 
 ```cmd
@@ -106,18 +112,29 @@ pip install -r requirements.txt
 |---|---|---|
 | [`playsound3`](https://pypi.org/project/playsound3/) | 跨平台播放音频文件，支持 `block=False` 异步播放和 `.stop()` | ✅ 主依赖，`main.py` 直接调用 |
 | `pywin32` | Windows 下音频播放的底层支持（MCI），由 `playsound3` 自动拉入 | ✅ 主依赖，仅 `sys_platform == 'win32'` 时安装 |
-| [`you-get`](https://pypi.org/project/you-get/) | 从网页下载音视频素材，用来准备 `music/` 里的音频 | ⚙️ 可选组 `tools`，命令行工具，代码不引用 |
-| `dukpy` | `you-get` 的传递依赖（内嵌 JS 引擎） | ⚙️ 随 `tools` 组一起安装 |
+| [`yt-dlp`](https://github.com/yt-dlp/yt-dlp) | 从视频/音频页面下载素材，用来准备 `music/` 里的文件 | ⚙️ 可选组 `tools`，命令行工具，代码不引用 |
 
-`you-get` 属于**可选**依赖，只用于准备素材，不影响演示运行。它的版本同样被 `uv.lock` 锁定，只是默认不安装。
+`yt-dlp` 属于**可选**依赖，只用于准备素材，不影响演示运行。它几乎没有传递依赖，版本同样被 `uv.lock` 锁定，只是默认不安装。
+
+装工具并下载素材：
 
 ```cmd
-:: 装上下载工具
 uv sync --group tools
-
-:: 下载素材到 music/
-uv run you-get -o music "<音频页面地址>"
+uv run yt-dlp -P music "<视频或音频页面地址>"
 ```
+
+> `-P music` 指定输出目录为 `music/`（`--paths` 的缩写），文件名自动按视频标题生成。
+>
+> ⚠️ 若源站点提供的是分离的音视频流，`yt-dlp` 需要系统里装有 **ffmpeg** 才能合并或转成 mp3/m4a。
+> 只下载单文件格式（如已上传的 mp3）则不需要 ffmpeg。检查：`ffmpeg -version`。
+>
+> 不同站点的可用性会随站点改版变化。报错时先升级到最新版再试（注意：不要用 `yt-dlp -U`，
+> 经 uv / pip 安装的副本不能自更新）：
+>
+> ```cmd
+> uv lock --upgrade-package yt-dlp
+> uv sync --group tools
+> ```
 
 不再需要时，从 `pyproject.toml` 的 `[dependency-groups]` 里删掉整个 `tools` 组，再 `uv lock` 一次即可。
 
