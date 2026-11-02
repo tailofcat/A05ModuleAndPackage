@@ -58,6 +58,7 @@ A05ModuleAndPackage/
 ├── main.py                 # 演示入口：导入 playsound3 并播放/停止
 ├── pyproject.toml          # 项目元信息与依赖声明
 ├── uv.lock                 # 依赖锁定文件（应提交，保证他人环境一致）
+├── requirements.txt        # pip 格式依赖清单，由 uv.lock 导出
 ├── music/                  # 音频素材
 │   ├── 一班名字之歌-四十九颗星.mp3
 │   └── 二三班名字之歌-九十七颗星.mp3
@@ -68,6 +69,32 @@ A05ModuleAndPackage/
 ```
 
 ## 依赖说明
+
+### 依赖安装的两种方式
+
+**方式 A：uv（推荐）**
+
+```cmd
+uv sync
+```
+
+`uv sync` 按 `uv.lock` 装出与作者完全一致的环境，包含 Windows 专用依赖的条件处理。
+
+**方式 B：pip（没装 uv 时）**
+
+```cmd
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+> `requirements.txt` 由 uv 自动导出，版本与 `uv.lock` 严格一致，**不要手改**。
+> 修改依赖后重新生成：
+> ```cmd
+> uv export --format requirements-txt --no-hashes --no-emit-project --output-file requirements.txt
+> ```
+
+### 依赖清单
 
 | 包 | 用途 | 在哪用 |
 |---|---|---|
@@ -84,7 +111,6 @@ uv run you-get -o music <音频页面地址>
 
 ## 音频文件对照
 
-README 早期版本里写的是 `四十九颗星_no-watermark (1).mp3`，那是素材的原始下载名。
 仓库里的实际文件名如下，照抄上面命令即可：
 
 | 实际文件 | 班级 |
@@ -107,6 +133,10 @@ README 早期版本里写的是 `四十九颗星_no-watermark (1).mp3`，那是�
 
 **`git push` 被拒，提示 `password authentication is not supported`**
 GitHub 已不支持账号密码。改用 Personal Access Token 当密码，见仓库推送说明。
+
+**`uv sync` 报错，或 `uv.lock` 与 `pyproject.toml` 不一致**
+先确认 uv 版本足够新（`uv --version`），再执行 `uv lock` 重新解析，最后 `uv sync`。
+不想动 lock 就换方式 B，用 `pip install -r requirements.txt` 绕过。
 
 ## 许可
 
