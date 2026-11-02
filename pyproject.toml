@@ -1,0 +1,11 @@
+[project]
+name = "a05moduleandpackage"
+version = "0.1.0"
+description = "《模块与包》教学演示：用 playsound3 播放音频，演示装包、import 与调用 API"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.13"
+dependencies = [
+    "playsound3>=3.3.2",
+    "you-get>=0.4.1743",
+]
